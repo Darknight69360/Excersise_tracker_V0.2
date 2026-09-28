@@ -1,0 +1,128 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mile Tracker</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Miles">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#2f5bea">
+<meta name="robots" content="noindex,nofollow">
+
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f6;--cd:#fff;--tx:#14213d;--mu:#667085;--ac:#2f5bea;--ln:#dde2ea;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0e1420;--cd:#182131;--tx:#eef2fa;--mu:#98a3b8;--ac:#7c9cff;--ln:#27324a}}
+:root[data-theme=dark]{--bg:#0e1420;--cd:#182131;--tx:#eef2fa;--mu:#98a3b8;--ac:#7c9cff;--ln:#27324a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:500 16px/1.4 'Bricolage Grotesque',system-ui,sans-serif;padding-bottom:84px}
+main{max-width:520px;margin:0 auto;padding:16px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+h1{font-size:26px;margin:0;font-weight:800}
+h2{font-size:18px;margin:22px 0 8px}
+button,select,input{font:inherit;color:inherit}
+.ic{background:var(--cd);border:1px solid var(--ln);border-radius:12px;width:44px;height:44px;font-size:20px;cursor:pointer}
+.card{background:var(--cd);border:1px solid var(--ln);border-radius:16px;padding:16px;margin-bottom:12px}
+.g{background:#bfe8c9;color:#0d4a20;border-color:#8fd0a2}.dg{background:#1f7a3d;color:#fff;border-color:#1f7a3d}.r{background:#f6c4c4;color:#7a1414;border-color:#eda0a0}
+.big{font-size:44px;font-weight:800;line-height:1}.sm{font-size:14px;opacity:.8}
+.bar{height:8px;border-radius:4px;background:rgba(127,127,127,.25);margin:10px 0 6px;overflow:hidden}.bar i{display:block;height:100%;background:currentColor;opacity:.75}
+.row{display:flex;gap:8px}
+.row input[type=text]{flex:1;min-width:0;position:relative;z-index:1;padding:12px;border-radius:12px;border:1px solid var(--ln);background:var(--cd);font-size:18px}
+.add{background:var(--ac);color:#fff;border:0;border-radius:12px;padding:0 18px;font-weight:700;cursor:pointer}
+.cal{position:relative;flex:0 0 48px;width:48px;overflow:hidden;display:grid;place-items:center;background:var(--cd);border:1px solid var(--ln);border-radius:12px;font-size:20px}
+.cal input{position:absolute;top:0;left:0;width:48px;max-width:48px;min-width:0;height:100%;opacity:0;-webkit-appearance:none;appearance:none;margin:0;padding:0}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--cd);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;border:0;background:none;padding:12px 0;font-weight:700;color:var(--mu);cursor:pointer}nav .on{color:var(--ac)}
+.mrow{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid var(--ln);border-radius:12px;margin-bottom:8px;background:var(--cd)}
+.st{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.st .card{margin:0;text-align:center;padding:12px 6px}.st b{font-size:22px;display:block}
+#dlg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center;z-index:9}
+#dlg.on{display:flex}#dlg>div{background:var(--bg);width:100%;max-width:520px;max-height:90%;overflow:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px))}
+.wd{display:flex;justify-content:space-between;align-items:center;margin:6px 0}
+select,#nm,#dm{padding:9px;border-radius:10px;border:1px solid var(--ln);background:var(--cd)}
+.lock nav{display:none}.au{margin-top:14vh}.au input{width:100%;padding:12px;border-radius:12px;border:1px solid var(--ln);background:var(--cd);font-size:18px;margin-bottom:10px}
+.er{color:#c0392b;min-height:22px;margin-bottom:6px}.lk{background:none;border:0;color:var(--mu);text-decoration:underline;cursor:pointer;margin-top:14px;padding:8px}
+</style></head><body>
+<main id="m"></main>
+<nav><button id="t1" class="on">Today</button><button id="t2">Progress</button></nav>
+<div id="dlg"><div id="sb"></div></div>
+<script>
+const K='runapp1',$=s=>document.querySelector(s),pad=n=>String(n).padStart(2,'0');
+const ds=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()),ym=d=>ds(d).slice(0,7);
+const today=()=>{const d=new Date();d.setHours(12,0,0,0);return d},P=s=>new Date(s+'T12:00:00');
+const f1=n=>String(Math.round(n*10)/10),MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+let S=null;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+if(!S||!S.miles){S={name:'Runner',joined:ds(today()),miles:{},goals:{}};S.goals[ym(today())]={d:1,w:[null,null,null,null,null,null,null]};save()}
+let tab=1,sel=ds(today());
+const gk=k=>{const ks=Object.keys(S.goals).sort();let r=ks[0];ks.forEach(x=>{if(x<=k)r=x});return S.goals[r]};
+const dg=d=>{const g=gk(ym(d)),v=g.w[d.getDay()];return v==null?g.d:v};
+const base=k=>{const [y,m]=k.split('-').map(Number);let t=0;for(let d=new Date(y,m-1,1,12);d.getMonth()==m-1;d.setDate(d.getDate()+1))if(ds(d)>=S.joined)t+=dg(d);return t};
+const miles=k=>Object.keys(S.miles).filter(x=>x.startsWith(k)).reduce((a,x)=>a+S.miles[x],0);
+function calc(){const o=[],cur=ym(today());let [y,m]=S.joined.slice(0,7).split('-').map(Number),c=0;
+ for(;;){const k=y+'-'+pad(m);if(k>cur)break;const b=base(k),mi=miles(k),t=b+c;
+  o.push({k,y,m,b,c,t,mi,done:k<cur});c=Math.min(b,Math.max(0,t-mi));m++;if(m>12){m=1;y++}}
+ return o}
+const cls=r=>r.t>0&&r.mi+1e-9>=r.t*1.2?'dg':r.mi+1e-9>=r.t?'g':r.done?'r':'';
+const lab=r=>MN[r.m-1]+' '+r.y;
+function home(){const c=calc(),r=c[c.length-1],h=new Date().getHours(),gr=h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Good night';
+ const dm=S.miles[sel]||0,goal=dg(P(sel)),left=Math.max(0,r.t-r.mi),pc=r.t?Math.min(100,r.mi/r.t*100):100,dl=new Date(r.y,r.m,0).getDate()-today().getDate()+1;
+ return `<header><h1>${gr}, ${S.name}</h1><button class="ic" id="gear" aria-label="Settings">⚙️</button></header>
+ <div class="card ${cls(r)}"><div class="sm">${lab(r)}</div><div class="big">${f1(r.mi)} <span class="sm">of ${f1(r.t)} mi</span></div>
+ <div class="bar"><i style="width:${pc}%"></i></div>
+ <div class="sm">${left>0?f1(left)+' mi to go, '+dl+' days left':'Goal reached'}${r.c>0?' · includes '+f1(r.c)+' carried over':''}</div></div>
+ <div class="card"><div class="sm">${P(sel).toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'short'})}</div>
+ <div style="margin:2px 0 12px"><b style="font-size:24px">${f1(dm)} mi</b> <span class="sm">goal ${f1(goal)}</span></div>
+ <div class="row"><input type="text" id="mi" inputmode="decimal" placeholder="Add miles"><label class="cal" aria-label="Pick a day">📅<input type="date" id="dt" value="${sel}" max="${ds(today())}"></label><button class="add" id="add">Add</button></div>
+ <div class="sm" style="margin-top:8px">Adds to the day's total. Use a minus to correct a mistake.</div></div>`}
+function bars(c,tot){const L=c.slice(-12),w=340,h=150,p=22,mx=Math.max(1,...L.map(r=>Math.max(r.mi,r.t)))*1.1,bw=(w-2*p)/L.length,Y=v=>h-p-(h-2*p)*v/mx,av=tot/c.length;
+ let s=`<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Monthly miles">`;
+ L.forEach((r,i)=>{const x=p+i*bw;s+=`<rect x="${x+3}" y="${Y(r.mi)}" width="${bw-6}" height="${h-p-Y(r.mi)}" rx="3" fill="var(--ac)"/><line x1="${x}" x2="${x+bw}" y1="${Y(r.t)}" y2="${Y(r.t)}" stroke="var(--tx)" stroke-width="2"/><text x="${x+bw/2}" y="${h-6}" font-size="9" text-anchor="middle" fill="var(--mu)">${MN[r.m-1].slice(0,3)}</text>`});
+ return s+`<line x1="${p}" x2="${w-p}" y1="${Y(av)}" y2="${Y(av)}" stroke="#d9481c" stroke-dasharray="4 3"/><text x="${w-p}" y="${Y(av)-4}" font-size="9" text-anchor="end" fill="#d9481c">avg ${f1(av)}</text></svg>`}
+function line(c){let a=0;const v=c.map(r=>a+=r.mi),w=340,h=120,p=22,mx=Math.max(1,a),X=i=>p+(c.length<2?0:i*(w-2*p)/(c.length-1)),Y=x=>h-p-(h-2*p)*x/mx;
+ return `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Running total"><polyline fill="none" stroke="var(--ac)" stroke-width="3" points="${v.map((x,i)=>X(i)+','+Y(x)).join(' ')}"/>${v.map((x,i)=>`<circle cx="${X(i)}" cy="${Y(x)}" r="3.5" fill="var(--ac)"/>`).join('')}<text x="${w-p}" y="${Y(a)-8}" font-size="10" text-anchor="end" fill="var(--tx)">${f1(a)} mi</text></svg>`}
+function prog(){const c=calc(),tot=Object.values(S.miles).reduce((a,b)=>a+b,0),days=Math.round((today()-P(S.joined))/864e5)+1;
+ return `<header><h1>Progress</h1><button class="ic" id="gear" aria-label="Settings">⚙️</button></header>
+ <div class="st"><div class="card"><b>${f1(tot)}</b><span class="sm">total mi</span></div><div class="card"><b>${f1(tot/c.length)}</b><span class="sm">avg / month</span></div><div class="card"><b>${f1(tot/days)}</b><span class="sm">avg / day</span></div></div>
+ <h2>Miles per month</h2><div class="card">${bars(c,tot)}<div class="sm">Bars: miles run. Black marks: target. Dashed: average.</div></div>
+ <h2>Total miles over time</h2><div class="card">${line(c)}</div>
+ <h2>Months</h2>${c.slice().reverse().map(r=>`<div class="mrow ${cls(r)}"><div><b>${lab(r)}</b><div class="sm">${r.c>0?'includes '+f1(r.c)+' carried over':r.done?'':'in progress'}</div></div><div style="text-align:right"><b>${f1(r.mi)} / ${f1(r.t)}</b></div></div>`).join('')}`}
+function render(){$('#m').innerHTML=tab==1?home():prog();$('#t1').className=tab==1?'on':'';$('#t2').className=tab==2?'on':'';
+ $('#gear').onclick=openSet;
+ if(tab==1){$('#dt').onchange=e=>{if(e.target.value){sel=e.target.value;render()}};
+  const go=()=>{const v=parseFloat($('#mi').value.replace(',','.'));if(isNaN(v))return;const n=Math.round(((S.miles[sel]||0)+v)*100)/100;if(n>0)S.miles[sel]=n;else delete S.miles[sel];save();render()};
+  $('#add').onclick=go;$('#mi').onkeydown=e=>{if(e.key=='Enter')go()}}}
+function openSet(){const g=gk(ym(today())),o=(v)=>{let s=`<option value="">Daily default</option>`;for(let i=0;i<=20;i++)s+=`<option value="${i/2}"${v===i/2?' selected':''}>${i/2} mi</option>`;return s};
+ $('#sb').innerHTML=`<header><h1>Settings</h1><button class="ic" id="x" aria-label="Close">✕</button></header>
+ <div class="wd">Your name <input id="nm" value="${S.name}" maxlength="20"></div>
+ <div class="wd">Daily mileage <input id="dm" type="number" min="0" step="0.5" value="${g.d}" style="width:90px"></div>
+ <h2>Goal for each weekday</h2>${[1,2,3,4,5,6,0].map(d=>`<div class="wd">${['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d]}<select data-d="${d}">${o(g.w[d])}</select></div>`).join('')}
+ <div class="sm">Saved goals apply from this month onward. Past months keep the goals they had. Each month's target adds up your goal for every day in it.</div>
+ <button class="add" id="sv" style="width:100%;height:48px;margin-top:14px">Save settings</button><button class="lk" id="lo" style="width:100%">Lock app on this device</button>`;
+ $('#dlg').className='on';$('#x').onclick=()=>$('#dlg').className='';$('#lo').onclick=()=>{try{localStorage.removeItem(T_K)}catch(x){}$('#dlg').className='';auth()};
+ $('#sv').onclick=()=>{const w=[null,null,null,null,null,null,null];document.querySelectorAll('select[data-d]').forEach(e=>w[+e.dataset.d]=e.value===''?null:parseFloat(e.value));
+  S.name=$('#nm').value.trim().replace(/[<>&"']/g,'')||'Runner';S.goals[ym(today())]={d:Math.max(0,parseFloat($('#dm').value)||0),w};save();$('#dlg').className='';render()}}
+const A_K='runauth1',T_K='runtrust1';let A=null;try{A=JSON.parse(localStorage.getItem(A_K))}catch(e){}
+const rid=()=>Math.random().toString(36).slice(2)+Date.now().toString(36)+Math.random().toString(36).slice(2);
+async function hx(p,s){try{const e=new TextEncoder(),k=await crypto.subtle.importKey('raw',e.encode(p),'PBKDF2',false,['deriveBits']),b=await crypto.subtle.deriveBits({name:'PBKDF2',salt:e.encode(s),iterations:100000,hash:'SHA-256'},k,256);return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){let h=5381;for(const c of s+p)h=(h*33^c.charCodeAt(0))>>>0;return'f'+h}}
+function auth(){document.body.classList.add('lock');const nw=!A;
+ $('#m').innerHTML=`<div class="au"><h1>${nw?'Welcome':'Welcome back'}</h1><p class="sm">${nw?'Create your sign-in. It stays on this device.':'Sign in to continue.'}</p><input id="an" placeholder="First name" autocomplete="given-name" value="${nw&&S.name!=='Runner'?S.name:''}"><input id="ap" type="password" placeholder="Password${nw?' (4+ characters)':''}" autocomplete="${nw?'new-password':'current-password'}"><div class="er" id="er"></div><button class="add" id="ag" style="width:100%;height:48px">${nw?'Create sign-in':'Sign in'}</button>${nw?'':'<button class="lk" id="fg">Forgot password? Erase everything and start over</button>'}</div>`;
+ const go=async()=>{const n=$('#an').value.trim().replace(/[<>&"']/g,''),p=$('#ap').value,e=$('#er');
+  if(!n){e.textContent='Enter your first name.';return}
+  if(nw){if(p.length<4){e.textContent='Use at least 4 characters.';return}
+   const salt=rid();A={salt,dev:rid(),hash:await hx(p,salt)};S.name=n;save();try{localStorage.setItem(A_K,JSON.stringify(A))}catch(x){}}
+  else if(n.toLowerCase()!==S.name.toLowerCase()||await hx(p,A.salt)!==A.hash){e.textContent='Name or password is wrong.';return}
+  try{localStorage.setItem(T_K,A.dev)}catch(x){}
+  document.body.classList.remove('lock');render()};
+ $('#ag').onclick=go;$('#ap').onkeydown=e=>{if(e.key=='Enter')go()};
+ if($('#fg')){let s=0;$('#fg').onclick=()=>{if(!s++){$('#fg').textContent='Tap again to erase all miles and settings';return}try{[K,A_K,T_K].forEach(k=>localStorage.removeItem(k))}catch(x){}location.reload()}}}
+$('#t1').onclick=()=>{tab=1;render()};$('#t2').onclick=()=>{tab=2;render()};
+let trusted=false;try{trusted=!!A&&localStorage.getItem(T_K)===A.dev}catch(e){}
+trusted?render():auth();
+</script><script>
+addEventListener('load',()=>{try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{})});
+</script>
+</body></html>
