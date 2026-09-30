@@ -1,0 +1,215 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Mile Tracker</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Miles">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#2f5bea">
+<meta name="robots" content="noindex,nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f6;--cd:#fff;--tx:#14213d;--mu:#667085;--ac:#2f5bea;--ln:#dde2ea;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0e1420;--cd:#182131;--tx:#eef2fa;--mu:#98a3b8;--ac:#7c9cff;--ln:#27324a}}
+:root[data-theme=dark]{--bg:#0e1420;--cd:#182131;--tx:#eef2fa;--mu:#98a3b8;--ac:#7c9cff;--ln:#27324a}
+html{scroll-padding-top:env(safe-area-inset-top,0px);touch-action:manipulation}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:500 16px/1.4 'Bricolage Grotesque',system-ui,sans-serif;padding-bottom:96px}
+main{max-width:520px;margin:0 auto;padding:16px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+h1{font-size:26px;margin:0;font-weight:800}h2{font-size:18px;margin:22px 0 8px}
+button,select,input{font:inherit;color:inherit}button,label{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.ic{background:var(--cd);border:1px solid var(--ln);border-radius:12px;width:44px;height:44px;font-size:20px;cursor:pointer;padding:0}
+.card{background:var(--cd);border:1px solid var(--ln);border-radius:16px;padding:16px;margin-bottom:12px}
+.g{background:#bfe8c9;color:#0d4a20;border-color:#8fd0a2}.dg{background:#1f7a3d;color:#fff;border-color:#1f7a3d}.r{background:#f6c4c4;color:#7a1414;border-color:#eda0a0}
+.big{font-size:44px;font-weight:800;line-height:1}.sm{font-size:14px;opacity:.8}
+.bar{height:8px;border-radius:4px;background:rgba(127,127,127,.25);margin:10px 0 6px;overflow:hidden}.bar i{display:block;height:100%;background:currentColor;opacity:.75}
+.row{display:flex;gap:8px}
+.row input[type=text]{flex:1;min-width:0;position:relative;z-index:1;height:48px;padding:12px;border-radius:12px;border:1px solid var(--ln);background:var(--cd);font-size:18px}
+.add{background:var(--ac);color:#fff;border:0;border-radius:12px;padding:0 18px;font-weight:700;cursor:pointer}
+.bt{flex:none;width:48px;height:48px;padding:0;border-radius:12px;border:1px solid var(--ln);background:var(--cd);font-size:26px;font-weight:700;line-height:1;cursor:pointer}
+.bt.plus{background:var(--ac);border-color:var(--ac);color:#fff}.bt.sub{color:#e5484d}.bt.x{color:#fff;background:#d92d20;border-color:#d92d20;font-size:18px;width:40px;height:40px}.bt:active{transform:scale(.96)}
+.cal{position:relative;flex:0 0 48px;overflow:hidden;display:grid;place-items:center;font-size:20px!important}
+.cal input{position:absolute;top:0;left:0;width:48px;max-width:48px;min-width:0;height:100%;opacity:0;-webkit-appearance:none;appearance:none;margin:0;padding:0}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;align-items:center;gap:18px;height:calc(64px + env(safe-area-inset-bottom,0px));padding:0 16px env(safe-area-inset-bottom,0px);background:var(--cd);border-top:1px solid var(--ln)}
+nav .tb{flex:1;height:52px;border:0;border-radius:26px;background:none;font-weight:700;font-size:15px;color:var(--mu);cursor:pointer}nav .tb.on{color:var(--ac)}
+nav .mid{flex:none;width:52px;height:52px;padding:0;border:0;border-radius:50%;background:var(--ac);color:#fff;font-size:30px;line-height:1;cursor:pointer}nav .mid.on{box-shadow:0 0 0 4px rgba(47,91,234,.3)}
+.card{box-shadow:0 1px 2px rgba(20,33,61,.06)}
+.ttl{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mu);margin-bottom:6px}
+.pb{height:10px;border-radius:5px;background:rgba(127,127,127,.22);margin-top:6px;overflow:hidden}.pb i{display:block;height:100%;background:var(--ac);border-radius:5px;transform-origin:left;animation:gr .6s ease-out}
+.pb i.ok{background:#1f9d55}@keyframes gr{from{transform:scaleX(0)}}.rg{animation:rg .8s ease-out}@keyframes rg{from{stroke-dasharray:0 264}}
+hr.ln{border:0;border-top:1px solid var(--ln);margin:22px 0 14px}
+#exs,#pvs{width:100%;height:48px;padding:0 12px;margin-bottom:12px;border-radius:12px;border:1px solid var(--ln);background:var(--cd);font-size:18px;font-weight:700}
+.mrow{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid var(--ln);border-radius:12px;margin-bottom:8px;background:var(--cd)}
+.ex{gap:8px;transition:transform .12s}.hd{touch-action:none;cursor:grab;padding:6px 8px;font-size:24px;color:var(--mu);user-select:none}
+.st{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.st .card{margin:0;text-align:center;padding:12px 6px}.st b{font-size:22px;display:block}
+#dlg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center;z-index:9}
+#dlg.on{display:flex}#dlg>div{background:var(--bg);width:100%;max-width:520px;max-height:90%;overflow:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px))}
+.wd{display:flex;justify-content:space-between;align-items:center;margin:6px 0}
+select,#nm,#dm{padding:9px;border-radius:10px;border:1px solid var(--ln);background:var(--cd)}
+.pick{display:flex;gap:10px}.pk{width:64px;height:64px;padding:6px}.pk img{width:100%;height:100%;border-radius:10px;display:block}.pk.on{outline:3px solid var(--ac)}
+.lock nav{display:none}.au{margin-top:14vh}.au input{width:100%;padding:12px;border-radius:12px;border:1px solid var(--ln);background:var(--cd);font-size:18px;margin-bottom:10px}
+.er{color:#c0392b;min-height:22px;margin-bottom:6px}.lk{background:none;border:0;color:var(--mu);text-decoration:underline;cursor:pointer;margin-top:14px;padding:8px}
+</style></head><body>
+<main id="m"></main>
+<nav><button id="t1" class="tb on">Today</button><button id="t2" class="mid" aria-label="Add exercise">+</button><button id="t3" class="tb">Progress</button></nav>
+<div id="dlg"><div id="sb"></div></div>
+<script>
+const K='runapp1',$=s=>document.querySelector(s),pad=n=>String(n).padStart(2,'0');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ds=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()),ym=d=>ds(d).slice(0,7);
+const today=()=>{const d=new Date();d.setHours(12,0,0,0);return d},P=s=>new Date(s+'T12:00:00');
+const f1=n=>String(Math.round(n*10)/10),MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+// Data layer: swap Store and Auth for server-backed versions later; the UI only calls these.
+const Store={load(){try{return JSON.parse(localStorage.getItem(K))}catch(e){return null}},save(s){try{localStorage.setItem(K,JSON.stringify(s))}catch(e){}}};
+let S=Store.load();
+const save=()=>{S.v=2;S.t=Date.now();Store.save(S)};
+const W0=()=>[null,null,null,null,null,null,null];
+if(!S||!S.joined)S={name:'Runner',joined:ds(today())};
+if(!S.ex){const mk=(id,name,dec,u,d)=>({id,name,dec,u,d});
+ S.ex=[mk('dist','Distance ran',1,'mi',1),mk('push','Push ups',0,'reps',10),mk('pull','Pull ups',0,'reps',5),mk('sit','Sit ups',0,'reps',10)];
+ S.log={dist:S.miles||{}};S.gs={dist:S.goals||{}};delete S.miles;delete S.goals;S.cur='dist';S.icon='classic'}
+save();
+let tab='home',sel=ds(today()),msg='',pv='all';
+const E=()=>S.ex.find(x=>x.id===S.cur)||S.ex[0],LG=e=>S.log[e.id]||(S.log[e.id]={}),GS=e=>S.gs[e.id]||(S.gs[e.id]={});
+const since=e=>e.since||S.joined;
+const gk=(e,k)=>{const g=GS(e),ks=Object.keys(g).sort();if(!ks.length)return{d:e.d,w:W0()};let r=ks[0];ks.forEach(x=>{if(x<=k)r=x});return g[r]};
+const dg=(e,d)=>{const g=gk(e,ym(d)),v=g.w[d.getDay()];return v==null?g.d:v};
+const base=(e,k)=>{const [y,m]=k.split('-').map(Number);let t=0;for(let d=new Date(y,m-1,1,12);d.getMonth()==m-1;d.setDate(d.getDate()+1))if(ds(d)>=since(e))t+=dg(e,d);return t};
+const tot=(e,k)=>Object.keys(LG(e)).filter(x=>x.startsWith(k)).reduce((a,x)=>a+LG(e)[x],0);
+function calc(e){const o=[],cur=ym(today());let [y,m]=since(e).slice(0,7).split('-').map(Number),c=0;
+ for(;;){const k=y+'-'+pad(m);if(k>cur)break;const b=base(e,k),mi=tot(e,k),t=b+c;
+  o.push({k,y,m,b,c,t,mi,done:k<cur});c=Math.min(b,Math.max(0,t-mi));m++;if(m>12){m=1;y++}}
+ return o}
+const cls=r=>r.t>0&&r.mi+1e-9>=r.t*1.2?'dg':r.mi+1e-9>=r.t?'g':r.done?'r':'';
+const lab=r=>MN[r.m-1]+' '+r.y;
+const exSel=()=>`<select id="exs" aria-label="Exercise">${S.ex.map(x=>`<option value="${x.id}"${x.id===E().id?' selected':''}>${esc(x.name)}</option>`).join('')}</select>`;
+const ICONS=[['run','Runner','icon-run.png'],['classic','Classic','icon-192.png'],['dumb','Dumbbell','icon-dumbbell.png'],['flex','Flex','icon-flex.png']];
+function applyIcon(){const f=(ICONS.find(i=>i[0]===S.icon)||ICONS[1])[2];document.querySelectorAll('link[rel=icon],link[rel=apple-touch-icon]').forEach(l=>l.href=f)}
+function home(){const e=E(),c=calc(e),r=c[c.length-1],h=new Date().getHours(),gr=h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Good night';
+ const dm=LG(e)[sel]||0,goal=dg(e,P(sel)),left=Math.max(0,r.t-r.mi),pc=r.t?Math.min(100,r.mi/r.t*100):100,dl=new Date(r.y,r.m,0).getDate()-today().getDate()+1;
+ return `<header><h1>${gr}, ${esc(S.name)}</h1><button class="ic" id="gear" aria-label="Settings">⚙️</button></header>${exSel()}
+ <div class="card ${cls(r)}"><div class="sm">${lab(r)}</div><div class="big">${f1(r.mi)} <span class="sm">of ${f1(r.t)} ${e.u}</span></div>
+ <div class="bar"><i style="width:${pc}%"></i></div>
+ <div class="sm">${left>0?f1(left)+' '+e.u+' to go, '+dl+' days left':'Goal reached'}${r.c>0?' · includes '+f1(r.c)+' carried over':''}</div></div>
+ <div class="card"><div class="sm">${P(sel).toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'short'})}${sel!==ds(today())?' <button class="lk" id="td" style="margin:0;padding:0 4px">Back to today</button>':''}</div>
+ <div style="margin:2px 0 12px"><b style="font-size:24px">${f1(dm)} ${e.u}</b> <span class="sm">goal ${f1(goal)}</span></div>
+ <div class="row"><input type="text" id="mi" inputmode="${e.dec?'decimal':'numeric'}" placeholder="${e.dec?'Miles':'Reps'}" maxlength="6" autocomplete="off" aria-label="Amount"><label class="bt cal" aria-label="Pick a day">📅<input type="date" id="dt" value="${sel}" max="${ds(today())}"></label><button class="bt sub" id="sub" aria-label="Subtract">−</button><button class="bt plus" id="add" aria-label="Add">+</button></div>
+ <div class="sm" id="hint" style="margin-top:8px;min-height:20px">${msg}</div></div>`}
+function bars(c,av){const L=c.slice(-12),w=340,h=150,p=22,mx=Math.max(1,...L.map(r=>Math.max(r.mi,r.t)))*1.1,bw=(w-2*p)/L.length,Y=v=>h-p-(h-2*p)*v/mx;
+ let s=`<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Monthly totals">`;
+ L.forEach((r,i)=>{const x=p+i*bw;s+=`<rect x="${x+3}" y="${Y(r.mi)}" width="${bw-6}" height="${h-p-Y(r.mi)}" rx="3" fill="var(--ac)"/><line x1="${x}" x2="${x+bw}" y1="${Y(r.t)}" y2="${Y(r.t)}" stroke="var(--tx)" stroke-width="2"/><text x="${x+bw/2}" y="${h-6}" font-size="9" text-anchor="middle" fill="var(--mu)">${MN[r.m-1].slice(0,3)}</text>`});
+ return s+(av===null?'':`<line x1="${p}" x2="${w-p}" y1="${Y(av)}" y2="${Y(av)}" stroke="#d9481c" stroke-dasharray="4 3"/><text x="${w-p}" y="${Y(av)-4}" font-size="9" text-anchor="end" fill="#d9481c">avg ${f1(av)}</text>`)+'</svg>'}
+function line(c){let a=0;const v=c.map(r=>a+=r.mi),w=340,h=120,p=22,mx=Math.max(1,a),X=i=>p+(c.length<2?0:i*(w-2*p)/(c.length-1)),Y=x=>h-p-(h-2*p)*x/mx;
+ return `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Running total"><polyline fill="none" stroke="var(--ac)" stroke-width="3" points="${v.map((x,i)=>X(i)+','+Y(x)).join(' ')}"/>${v.map((x,i)=>`<circle cx="${X(i)}" cy="${Y(x)}" r="3.5" fill="var(--ac)"/>`).join('')}<text x="${w-p}" y="${Y(a)-8}" font-size="10" text-anchor="end" fill="var(--tx)">${f1(a)}</text></svg>`}
+const pvSel=()=>`<select id="pvs" aria-label="Progress view"><option value="all"${pv==='all'?' selected':''}>Overall</option>${S.ex.map(x=>`<option value="${x.id}"${x.id===pv?' selected':''}>${esc(x.name)}</option>`).join('')}</select>`;
+// Score for a month: each exercise counts up to its goal and no further; max is every goal added together.
+function mscore(k){let s=0,m=0;const rows=S.ex.map(e=>{const b=base(e,k),d=tot(e,k);s+=Math.min(d,b);m+=b;return{e,d,b}});return{s,m,rows,p:m?s/m:0}}
+const pb=(p,ok)=>`<div class="pb"><i class="${ok?'ok':''}" style="width:${Math.min(100,Math.max(0,p*100))}%"></i></div>`;
+const ring=(p,z,w,txt)=>{const C=2*Math.PI*42;return `<svg viewBox="0 0 100 100" width="${z}" height="${z}" role="img" aria-label="${Math.round(p*100)} percent"><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(127,127,127,.25)" stroke-width="${w}"/>${p>0?`<circle class="rg" cx="50" cy="50" r="42" fill="none" stroke="${p>=1?'#1f9d55':'var(--ac)'}" stroke-width="${w}" stroke-linecap="round" stroke-dasharray="${C*Math.min(1,p)} ${C}" transform="rotate(-90 50 50)"/>`:''}${txt||''}</svg>`};
+const line2=(n,a,b,u,sep=' / ')=>`<div style="margin:12px 0"><div class="wd" style="margin:0"><b>${esc(n)}</b><span class="sm">${b>0?f1(a)+sep+f1(b)+' '+u:'Rest day'}</span></div>${pb(b>0?a/b:0,b>0&&a>=b)}</div>`;
+function progAll(){const now=today(),k=ym(now),th=mscore(k),dk=ds(now),pc=Math.round(th.p*100);
+ const first=S.ex.map(since).sort()[0].slice(0,7),items=[];let y=+first.slice(0,4),m=+first.slice(5);
+ for(;;){const kk=y+'-'+pad(m);if(kk>=k)break;const q=mscore(kk);
+  if(q.m>0)items.push(`<div class="mrow"><div><b>${y}</b> ${MN[m-1]}</div><div style="display:flex;align-items:center;gap:10px"><b>${Math.round(q.p*100)}%</b>${ring(q.p,44,14)}</div></div>`);
+  m++;if(m>12){m=1;y++}}
+ return `<header><h1>Progress</h1><button class="ic" id="gear" aria-label="Settings">⚙️</button></header>${pvSel()}
+ <div class="card"><div class="ttl">Today</div>${S.ex.map(e=>line2(e.name,LG(e)[dk]||0,dg(e,now),e.u)).join('')}</div>
+ <div class="card"><div class="ttl">${MN[now.getMonth()]}, whole month</div>${th.rows.map(r=>r.b>0?line2(r.e.name,r.d,r.b,r.e.u,' of '):`<div class="wd" style="margin:12px 0"><b>${esc(r.e.name)}</b><span class="sm">No goal</span></div>`).join('')}</div>
+ <div class="card" style="text-align:center"><div class="ttl" style="text-align:left">${MN[now.getMonth()]} score</div>${ring(th.p,190,10,`<text x="50" y="58" text-anchor="middle" font-size="24" font-weight="800" fill="var(--tx)">${pc}%</text>`)}</div>
+ <hr class="ln"><div class="ttl">Past months</div>${items.reverse().join('')||'<div class="sm">Finished months will show up here.</div>'}`}
+function prog(){if(pv!=='all'&&!S.ex.some(x=>x.id===pv))pv='all';return pv==='all'?progAll():progOne()}
+function progOne(){const e=S.ex.find(x=>x.id===pv)||E(),c=calc(e),t=Object.values(LG(e)).reduce((a,b)=>a+b,0),ac=c.slice(1),as=ac.reduce((a,r)=>a+r.mi,0),ad=ac.reduce((a,r)=>a+(r.done?new Date(r.y,r.m,0).getDate():today().getDate()),0),avm=ac.length?as/ac.length:null,avd=ad?as/ad:null;
+ return `<header><h1>Progress</h1><button class="ic" id="gear" aria-label="Settings">⚙️</button></header>${pvSel()}
+ <div class="st"><div class="card"><b>${f1(t)}</b><span class="sm">total ${e.u}</span></div><div class="card"><b>${avm===null?'–':f1(avm)}</b><span class="sm">avg / month</span></div><div class="card"><b>${avd===null?'–':f1(avd)}</b><span class="sm">avg / day</span></div></div>
+ <h2>${esc(e.name)} per month</h2><div class="card">${bars(c,avm)}</div>
+ <h2>Total over time</h2><div class="card">${line(c)}</div>
+ <h2>Months</h2>${c.slice().reverse().map(r=>`<div class="mrow ${cls(r)}"><div><b>${lab(r)}</b><div class="sm">${r.c>0?'includes '+f1(r.c)+' carried over':r.done?'':'in progress'}</div></div><div style="text-align:right"><b>${f1(r.mi)} / ${f1(r.t)}</b></div></div>`).join('')}`}
+function addTab(){return `<header><h1>Add your exercise here</h1></header>
+ <div class="row"><input type="text" id="nx" placeholder="e.g. Squats" maxlength="24" autocomplete="off" aria-label="Exercise name"><button class="bt plus" id="ok" aria-label="Add exercise">✓</button></div>
+ <div class="sm" id="ah" style="margin:8px 0;min-height:20px">${msg}</div>
+ <h2>Your exercises</h2> <div id="ls">${S.ex.map(x=>`<div class="mrow ex" data-id="${x.id}"><span class="hd" aria-label="Drag to reorder">≡</span><b style="flex:1">${esc(x.name)}</b>${S.ex.length>1?'<button class="bt x" aria-label="Delete">✕</button>':''}</div>`).join('')}</div>`}
+function ask(id){const x=S.ex.find(y=>y.id===id);
+ $('#sb').innerHTML=`<h1 style="font-size:22px">Delete ${esc(x.name)}?</h1><p class="sm">Everything you logged for it will be deleted too.</p><button class="add" id="dl" style="width:100%;height:48px;background:#d92d20">Delete</button><button class="lk" id="nv" style="width:100%;font-size:16px">Never mind</button>`;
+ $('#dlg').className='on';$('#nv').onclick=()=>$('#dlg').className='';
+ $('#dl').onclick=()=>{S.ex=S.ex.filter(y=>y.id!==id);delete S.log[id];delete S.gs[id];if(S.cur===id)S.cur=S.ex[0].id;save();$('#dlg').className='';render()}}
+function drag(ev,row){ev.preventDefault();const ls=[...$('#ls').children],i=ls.indexOf(row),h=row.offsetHeight+8,y0=ev.clientY;let j=i;row.style.zIndex=5;row.style.transition='none';
+ const mv=q=>{const dy=q.clientY-y0;j=Math.max(0,Math.min(ls.length-1,i+Math.round(dy/h)));row.style.transform=`translateY(${dy}px)`;
+  ls.forEach((r,k)=>{if(r!==row)r.style.transform=k>i&&k<=j?`translateY(${-h}px)`:k<i&&k>=j?`translateY(${h}px)`:''})};
+ const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up);
+  if(j!==i){const [m]=S.ex.splice(i,1);S.ex.splice(j,0,m);save()}render()};
+ addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up)}
+function render(){$('#m').innerHTML=tab=='home'?home():tab=='add'?addTab():prog();msg='';
+ $('#t1').className='tb'+(tab=='home'?' on':'');$('#t2').className='mid'+(tab=='add'?' on':'');$('#t3').className='tb'+(tab=='prog'?' on':'');
+ if($('#gear'))$('#gear').onclick=openSet;
+ if($('#exs'))$('#exs').onchange=q=>{S.cur=q.target.value;save();render()};
+ if($('#pvs'))$('#pvs').onchange=q=>{pv=q.target.value;render()};
+ if(tab=='add'){const add=()=>{const n=$('#nx').value.trim().replace(/[<>&"']/g,'').slice(0,24),h=$('#ah');
+   if(!n){h.textContent='Type an exercise name first.';return}
+   if(S.ex.some(x=>x.name.toLowerCase()===n.toLowerCase())){h.textContent='You already have that one.';return}
+   if(S.ex.length>=20){h.textContent='You can have up to 20 exercises.';return}
+   S.ex.push({id:'x'+rid(),name:n,dec:0,u:'reps',d:10,since:ds(today())});msg='Added '+n+'.';save();render()};
+  $('#ok').onclick=add;$('#nx').onkeydown=q=>{if(q.key=='Enter')add()};
+  document.querySelectorAll('#ls .ex').forEach(r=>{r.querySelector('.hd').onpointerdown=q=>drag(q,r);const x=r.querySelector('.x');if(x)x.onclick=()=>ask(r.dataset.id)})}
+ if(tab=='home'){const e=E(),keep=f=>{const v=$('#mi').value;f();render();$('#mi').value=v};
+  $('#dt').onchange=q=>{if(q.target.value)keep(()=>{sel=q.target.value})};
+  if($('#td'))$('#td').onclick=()=>keep(()=>{sel=ds(today())});
+  const go=sg=>{const raw=$('#mi').value.trim().replace(',','.'),h=$('#hint'),L=LG(e),o=L[sel]||0,mx=e.dec?200:5000;
+   if(!(e.dec?/^(\d{1,3}(\.\d{0,2})?|\.\d{1,2})$/:/^\d{1,4}$/).test(raw)||+raw>mx||+raw===0){h.textContent=e.dec?'Enter a number from 0 to 200, like 3.2':'Enter a whole number from 1 to 5000';return}
+   if(sg<0&&o===0){h.textContent='Nothing logged on this day to remove.';return}
+   const n=Math.max(0,Math.round((o+sg*parseFloat(raw))*100)/100);if(n>0)L[sel]=n;else delete L[sel];
+   msg=(sg>0?'Added ':'Removed ')+f1(Math.abs(n-o))+' '+e.u+'. Day total: '+f1(n)+'.';save();render()};
+  $('#add').onclick=()=>go(1);$('#sub').onclick=()=>go(-1);$('#mi').onkeydown=q=>{if(q.key=='Enter')go(1)}}}
+function openSet(){const e=E(),g=gk(e,ym(today())),st=e.dec?.5:5,mx=e.dec?10:200,o=v=>{let s='<option value="">Daily default</option>';for(let i=0;i<=mx;i+=st)s+=`<option value="${i}"${v===i?' selected':''}>${i} ${e.u}</option>`;return s};
+ $('#sb').innerHTML=`<header><h1>Settings</h1><button class="ic" id="x" aria-label="Close">✕</button></header>
+ <div class="wd">Your name <input id="nm" value="${esc(S.name)}" maxlength="20"></div>
+ <h2>App icon</h2><div class="pick">${ICONS.map(i=>`<button class="ic pk${S.icon===i[0]?' on':''}" data-i="${i[0]}" aria-label="${i[1]}"><img src="${i[2]}" alt=""></button>`).join('')}</div>
+ <div class="sm" style="margin-top:6px">Re-add the app to your Home Screen to apply.</div>
+ <h2>Goals for ${esc(e.name)}</h2>
+ <div class="wd">Daily amount <input id="dm" type="number" min="0" step="${e.dec?.5:1}" value="${g.d}" style="width:90px"></div>
+ ${[1,2,3,4,5,6,0].map(d=>`<div class="wd">${['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d]}<select data-d="${d}">${o(g.w[d])}</select></div>`).join('')}
+ <button class="add" id="sv" style="width:100%;height:48px;margin-top:14px">Save settings</button><button class="lk" id="lo" style="width:100%">Sign out</button>`;
+ $('#dlg').className='on';$('#x').onclick=()=>$('#dlg').className='';$('#lo').onclick=()=>{Auth.signOut();$('#dlg').className='';auth()};
+ document.querySelectorAll('.pk').forEach(b=>b.onclick=()=>{S.icon=b.dataset.i;save();applyIcon();document.querySelectorAll('.pk').forEach(x=>x.classList.toggle('on',x===b))});
+ $('#sv').onclick=()=>{const w=W0();document.querySelectorAll('select[data-d]').forEach(q=>w[+q.dataset.d]=q.value===''?null:parseFloat(q.value));
+  S.name=$('#nm').value.trim().replace(/[<>&"']/g,'')||'Runner';GS(e)[ym(today())]={d:Math.min(mx*5,Math.max(0,parseFloat($('#dm').value)||0)),w};save();$('#dlg').className='';render()}}
+const A_K='runauth1',T_K='runtrust1',rid=()=>Math.random().toString(36).slice(2)+Date.now().toString(36)+Math.random().toString(36).slice(2);
+async function hx(p,s){try{const e=new TextEncoder(),k=await crypto.subtle.importKey('raw',e.encode(p),'PBKDF2',false,['deriveBits']),b=await crypto.subtle.deriveBits({name:'PBKDF2',salt:e.encode(s),iterations:100000,hash:'SHA-256'},k,256);return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){let h=5381;for(const c of s+p)h=(h*33^c.charCodeAt(0))>>>0;return'f'+h}}
+// Each Auth method resolves to '' on success or an error message.
+const Auth={
+ rec(){try{return JSON.parse(localStorage.getItem(A_K))}catch(e){return null}},
+ has(){return !!this.rec()},
+ signedIn(){const a=this.rec();try{return !!a&&localStorage.getItem(T_K)===a.dev}catch(e){return false}},
+ async signUp(name,pw){if(this.has())return 'An account already exists on this device. Go back and sign in.';
+  const salt=rid(),a={salt,dev:rid(),hash:await hx(pw,salt)};S.name=name;save();
+  try{localStorage.setItem(A_K,JSON.stringify(a));localStorage.setItem(T_K,a.dev)}catch(e){}return ''},
+ async signIn(name,pw){const a=this.rec();if(!a)return 'No account on this device yet. Tap Create account.';
+  if(name.toLowerCase()!==S.name.toLowerCase()||await hx(pw,a.salt)!==a.hash)return 'Name or password is wrong.';
+  try{localStorage.setItem(T_K,a.dev)}catch(e){}return ''},
+ signOut(){try{localStorage.removeItem(T_K)}catch(e){}},
+ wipe(){try{[K,A_K,T_K].forEach(k=>localStorage.removeItem(k))}catch(e){}}
+};
+function auth(mode){document.body.classList.add('lock');const nw=mode==='new',ob='background:none;border:1px solid var(--ln);border-radius:12px;height:48px;width:100%;margin-top:10px;font-weight:700;cursor:pointer';
+ $('#m').innerHTML=`<div class="au"><h1>${nw?'Create account':'Welcome back'}</h1><input id="an" placeholder="First name" autocomplete="given-name" value="${nw&&S.name!=='Runner'?esc(S.name):''}"><input id="ap" type="password" placeholder="Password${nw?' (4+ characters)':''}" autocomplete="${nw?'new-password':'current-password'}"><div class="er" id="er"></div><button class="add" id="ag" style="width:100%;height:48px">${nw?'Create account':'Sign in'}</button><button id="sw" style="${ob}">${nw?'Back to sign in':'Create account'}</button>${!nw&&Auth.has()?'<button class="lk" id="fg">Forgot password? Erase everything and start over</button>':''}</div>`;
+ const go=async()=>{const n=$('#an').value.trim().replace(/[<>&"']/g,''),p=$('#ap').value,e=$('#er'),b=$('#ag');
+  if(!n){e.textContent='Enter your first name.';return}
+  if(nw&&p.length<4){e.textContent='Use at least 4 characters.';return}
+  e.textContent='';b.disabled=true;const err=await(nw?Auth.signUp(n,p):Auth.signIn(n,p));b.disabled=false;
+  if(err){e.textContent=err;return}
+  document.body.classList.remove('lock');render()};
+ $('#ag').onclick=go;$('#ap').onkeydown=e=>{if(e.key=='Enter')go()};$('#sw').onclick=()=>auth(nw?'in':'new');
+ if($('#fg')){let s=0;$('#fg').onclick=()=>{if(!s++){$('#fg').textContent='Tap again to erase all data and settings';return}Auth.wipe();location.reload()}}}
+$('#t1').onclick=()=>{tab='home';render()};$('#t2').onclick=()=>{tab='add';render()};$('#t3').onclick=()=>{tab='prog';render()};
+$('#dlg').onclick=e=>{if(e.target.id==='dlg')$('#dlg').className=''};
+applyIcon();Auth.signedIn()?render():auth();
+</script>
+<script>
+['gesturestart','gesturechange','gestureend'].forEach(n=>document.addEventListener(n,e=>e.preventDefault()));
+document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
+addEventListener('load',()=>{try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{})});
+</script>
+</body></html>
